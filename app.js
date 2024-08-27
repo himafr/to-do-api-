@@ -20,11 +20,9 @@ app.use(express.static(`${__dirname}/public`));
 // });
  
 app.use(morgan('dev'))
-
 //Routes
 app.use("/api/v1/todo",authControllers.protect,todoRoute);
 app.use("/api/v1/users",userRoute);
-
 app.all("*",(req,res,next)=>{
 next(new AppError(`Can't find ${req.originalUrl} on this server`,404))
 })

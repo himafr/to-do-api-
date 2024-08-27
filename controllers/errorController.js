@@ -47,6 +47,7 @@ sendErrorPro=(err,res)=>{
     }
 }
 module.exports=(err,req,res,next)=>{
+    console.log(err)
     err.status=err.status || "Error"
 
     err.statusCode=err.statusCode ||500

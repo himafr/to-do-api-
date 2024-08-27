@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (id,name,email) => {
+  return jwt.sign({ id,name,email }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
@@ -15,7 +15,7 @@ exports.registerUser = catchAsync(async (req, res, next) => {
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
   });
-  const token = signToken(newUser._id);
+  const token = signToken(newUser._id,newUser.name,newUser.email);
   res.status(201).json({
     status: "success",
     token,
@@ -27,17 +27,22 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 
 exports.loginUser = catchAsync(async (req, res, next) => {
   const { password, email } = req.body;
+  console.log(password,email)
   //check exist email and password
   if (!password || !email) {
     return next(new AppError("please enter your email and password", 400));
   }
   //check valid email and password
   const user = await User.findOne({ email }).select("+password");
-  if (!user || !(await user.comparePassword(password, user.password))) {
+  console.log(user)
+  console.log(!user)
+  
+  if (! user || !(await user.comparePassword(password, user.password))) {
     return next(new AppError("pls check your email or password", 401));
   }
   //logging in
-  const token = signToken(user._id);
+  const token = signToken(user._id,user.name,user.email);
+  console.log(token)
   res.status(200).json({
     status: "success",
     token,

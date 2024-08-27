@@ -1,4 +1,6 @@
 const mongoose=require('mongoose')
+process.env.NODE_ENV='development'
+
 process.on('uncaughtException',err=>{
     console.log("UNCAUGHT EXCEPTION!!!",err.message);
     process.exit(1)  
