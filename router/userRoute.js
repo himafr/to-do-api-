@@ -5,14 +5,16 @@ const router=express.Router()
 
 router.post('/signup',authController.registerUser)
 router.post('/login',authController.loginUser)
+
 router
 .route("/")
-.get(userController.getAllUsers)
-.post(userController.createUser);
+.get(authController.protect,userController.getAllUsers)
+.post(authController.protect,userController.createUser);
 
 router
 .route("/:id")
-.get(userController.findUser)
-.patch(userController.updateUser)
-.delete(userController.deleteUser);
+.get(authController.protect, userController.findUser)
+.patch(authController.protect,userController.updateUser)
+.delete(authController.protect,userController.deleteUser);
+
 module.exports=router
